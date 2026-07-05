@@ -1,0 +1,70 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./freightnaut.db"
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+  email String  @unique
+  role  String  @default("Admin")
+}
+
+model Shipment {
+  id               Int      @id @default(autoincrement())
+  shipment_name    String
+  shipment_number  String   @unique
+  mode_of_transport String  // SEA, AIR, ROAD, RAIL
+  type_of_shipment  String  // LCL, FCL
+  status           String   @default("Draft") // Draft, Untracked, New, In Progress, Booked, Loaded, Sailing, Arrived, Discharged, Delivered
+  created_at       DateTime @default(now())
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  doc_name    String
+  doc_type    String   // Commercial Invoice, Packing List, etc.
+  linked_shipment String?
+  created_by  String
+  updated_at  DateTime @default(now())
+}
+
+model Product {
+  id        Int    @id @default(autoincrement())
+  name      String
+  sku       String @unique
+  hs_code   String
+  price     Float
+  weight    Float
+}
+
+model Contact {
+  id      Int    @id @default(autoincrement())
+  name    String
+  email   String @unique
+  role    String // Buyer, Consignee, Forwarder, Broker
+  address String
+}
+
+model Package {
+  id         Int    @id @default(autoincrement())
+  name       String
+  length     Float
+  width      Float
+  height     Float
+  max_weight Float
+}
+
+model InventoryItem {
+  id         Int    @id @default(autoincrement())
+  name       String
+  sku        String
+  warehouse  String
+  stock      Int
+  unit_value Float
+  status     String // In Stock, Low Stock
+}
